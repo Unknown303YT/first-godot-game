@@ -1,0 +1,48 @@
+[gd_scene load_steps=4 format=3 uid="uid://bj0vcynburgup"]
+
+[ext_resource type="Texture2D" uid="uid://dg6vydi0frjoj" path="res://assets/textures/platforms.png" id="2_nwvto"]
+
+[sub_resource type="GDScript" id="GDScript_wtvnv"]
+script/source = "extends AnimatableBody2D
+
+const SPEED = 60
+
+@onready var ray_cast_left = $RayCastLeft
+@onready var ray_cast_right = $RayCastRight
+@onready var timer = $Timer
+
+var direction = 1
+
+
+func _process(delta: float) -> void:
+	if ray_cast_left.is_colliding():
+		direction = 1
+	if ray_cast_right.is_colliding():
+		direction = -1
+	
+	position.x = direction * SPEED * delta
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0kifv"]
+size = Vector2(32, 8)
+
+[node name="MovingPlatform" type="AnimatableBody2D"]
+script = SubResource("GDScript_wtvnv")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_nwvto")
+region_enabled = true
+region_rect = Rect2(16, 0, 32, 9)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_0kifv")
+one_way_collision = true
+
+[node name="RayCastLeft" type="RayCast2D" parent="."]
+target_position = Vector2(-16, 0)
+
+[node name="RayCastRight" type="RayCast2D" parent="."]
+target_position = Vector2(16, 0)
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.1
